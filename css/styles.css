@@ -1,0 +1,333 @@
+:root {
+    --yellow: #FFD700;
+    --black: #000000;
+    --gray: #696969;
+    --red: #DC143C;
+    --dark-gray: #2C2C2C;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 250px;
+    background: linear-gradient(180deg, var(--black) 0%, var(--dark-gray) 100%);
+    color: white;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    padding: 20px;
+    text-align: center;
+    border-bottom: 2px solid var(--yellow);
+}
+
+.sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.7);
+    padding: 12px 20px;
+    border-left: 4px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+    color: var(--yellow);
+    background-color: rgba(255, 215, 0, 0.1);
+    border-left: 4px solid var(--yellow);
+}
+
+.sidebar .nav-link i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+}
+
+.main-content {
+    margin-left: 250px;
+    transition: all 0.3s ease;
+}
+
+.main-content .navbar {
+    background-color: var(--black);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.section {
+    display: none;
+}
+
+.section.active {
+    display: block;
+}
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.btn-yellow {
+    background-color: var(--yellow);
+    color: var(--black);
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-yellow:hover {
+    background-color: #e6c200;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 215, 0, 0.3);
+}
+
+.btn-red {
+    background-color: var(--red);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-red:hover {
+    background-color: #c41230;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(220, 20, 60, 0.3);
+}
+
+.table thead th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(255, 215, 0, 0.1);
+}
+
+.bg-yellow {
+    background-color: var(--yellow) !important;
+}
+
+.bg-black {
+    background-color: var(--black) !important;
+}
+
+.bg-gray {
+    background-color: var(--gray) !important;
+}
+
+.bg-red {
+    background-color: var(--red) !important;
+}
+
+.text-yellow {
+    color: var(--yellow) !important;
+}
+
+.text-black {
+    color: var(--black) !important;
+}
+
+.text-gray {
+    color: var(--gray) !important;
+}
+
+.text-red {
+    color: var(--red) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+    }
+    
+    .main-content {
+        margin-left: 200px;
+    }
+    
+    .sidebar .nav-link span {
+        display: none;
+    }
+    
+    .sidebar .nav-link i {
+        margin-right: 0;
+        width: auto;
+    }
+}
+
+/* Login modal styling */
+.modal-content {
+    border-radius: 10px;
+    border: 3px solid var(--yellow);
+}
+
+.modal-header {
+    border-bottom: 2px solid var(--yellow);
+}
+
+/* Status badges */
+.badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.badge-success {
+    background-color: #28a745;
+}
+
+.badge-warning {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.badge-danger {
+    background-color: #dc3545;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--yellow);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #e6c200;
+}
+
+/* Animation for dashboard cards */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.card:nth-child(1) { animation-delay: 0.1s; }
+.card:nth-child(2) { animation-delay: 0.2s; }
+.card:nth-child(3) { animation-delay: 0.3s; }
+.card:nth-child(4) { animation-delay: 0.4s; }
+
+/* Low stock warning */
+.low-stock {
+    color: var(--red);
+    font-weight: bold;
+}
+
+/* Form validation */
+.form-control.is-invalid {
+    border-color: var(--red);
+}
+
+.invalid-feedback {
+    color: var(--red);
+    font-size: 0.875rem;
+}
+
+/* Loading spinner */
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+    border-width: 0.3em;
+}
+
+/* Toast notifications */
+.toast {
+    background-color: var(--black);
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.toast-header {
+    background-color: var(--yellow);
+    color: var(--black);
+    font-weight: 600;
+}
+
+/* Product card hover effect */
+.product-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.product-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
+}
+
+/* Search input styling */
+.form-control:focus {
+    border-color: var(--yellow);
+    box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
+}
+
+/* Table row hover effect */
+.table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(255, 215, 0, 0.1);
+}
+
+/* Badge styling */
+.badge {
+    display: inline-block;
+    padding: 0.35em 0.65em;
+    font-size: 0.75em;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+}
+
+/* Custom select styling */
+.form-select:focus {
+    border-color: var(--yellow);
+    box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
+}
+
+/* Modal backdrop */
+.modal-backdrop.show {
+    background-color: rgba(0, 0, 0, 0.7);
+}

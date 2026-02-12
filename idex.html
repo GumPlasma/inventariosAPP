@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Sex Shopo De Riki - Gestión de Inventario</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Añade esto en el head -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' width='100' height='100'><circle cx='50' cy='50' r='50' fill='%23FFD700'/></svg>">
+</head>
+<body>
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-black text-white">
+                    <h5 class="modal-title"><i class="fas fa-user"></i> Iniciar Sesión - El Sex Shopo De Riki</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <h2 class="text-yellow"><i class="fas fa-store"></i> EL SEX SHOPo DE RIKI</h2>
+                        <p class="text-muted">Sistema de Gestión de Inventario</p>
+                    </div>
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Usuario</label>
+                            <input type="text" class="form-control" id="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Contraseña</label>
+                            <input type="password" class="form-control" id="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-yellow w-100">
+                            <i class="fas fa-sign-in-alt"></i> Ingresar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div id="appContainer" class="d-none">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h3 class="text-yellow"><i class="fas fa-store"></i> EL SEX SHOPo DE RIKI</h3>
+                <p class="text-white small">Inventario</p>
+            </div>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#dashboard" data-section="dashboard">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item admin-only">
+                    <a class="nav-link" href="#products" data-section="products">
+                        <i class="fas fa-boxes"></i> Productos
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#inventory" data-section="inventory">
+                        <i class="fas fa-warehouse"></i> Inventario
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#movements" data-section="movements">
+                        <i class="fas fa-exchange-alt"></i> Movimientos
+                    </a>
+                </li>
+                <li class="nav-item admin-only">
+                    <a class="nav-link" href="#categories" data-section="categories">
+                        <i class="fas fa-tags"></i> Categorías
+                    </a>
+                </li>
+                <li class="nav-item admin-only">
+                    <a class="nav-link" href="#employees" data-section="employees">
+                        <i class="fas fa-users"></i> Empleados
+                    </a>
+                </li>
+                <li class="nav-item admin-only">
+                    <a class="nav-link" href="#statistics" data-section="statistics">
+                        <i class="fas fa-chart-bar"></i> Estadísticas
+                    </a>
+                </li>
+                <li class="nav-item mt-auto">
+                    <a class="nav-link text-danger" href="#" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="main-content">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-black">
+                <div class="container-fluid">
+                    <button class="btn btn-outline-yellow" id="sidebarToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="d-flex align-items-center">
+                        <span class="text-white me-3" id="userRoleBadge"></span>
+                        <span class="text-white" id="userNameDisplay"></span>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container-fluid mt-4">
+                <!-- Dashboard Section -->
+                <div id="dashboard" class="section active">
+                    <h2 class="mb-4"><i class="fas fa-tachometer-alt"></i> Dashboard</h2>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <div class="card bg-yellow text-dark">
+                                <div class="card-body">
+                                    <h5 class="card-title"><i class="fas fa-boxes"></i> Total Productos</h5>
+                                    <h2 class="card-text" id="totalProducts">0</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card bg-black text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title"><i class="fas fa-shopping-cart"></i> Entradas Hoy</h5>
+                                    <h2 class="card-text" id="entriesToday">0</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card bg-red text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title"><i class="fas fa-truck-moving"></i> Salidas Hoy</h5>
+                                    <h2 class="card-text" id="exitsToday">0</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card bg-gray text-dark">
+                                <div class="card-body">
+                                    <h5 class="card-title"><i class="fas fa-exclamation-triangle"></i> Bajo Stock</h5>
+                                    <h2 class="card-text" id="lowStockCount">0</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header bg-black text-white">
+                                    <h5 class="mb-0"><i class="fas fa-history"></i> Últimos Movimientos</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="recentMovements" class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Fecha</th>
+                                                    <th>Tipo</th>
+                                                    <th>Producto</th>
+                                                    <th>Cantidad</th>
+                                                    <th>Usuario</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="recentMovementsTable"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products Section -->
+                <div id="products" class="section admin-only">
+                    <h2 class="mb-4"><i class="fas fa-boxes"></i> Gestión de Productos</h2>
+                    <button class="btn btn-yellow mb-3" data-bs-toggle="modal" data-bs-target="#productModal">
+                        <i class="fas fa-plus"></i> Nuevo Producto
+                    </button>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="bg-black text-white">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Categoría</th>
+                                    <th>Precio</th>
+                                    <th>Stock</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productsTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Inventory Section -->
+                <div id="inventory" class="section">
+                    <h2 class="mb-4"><i class="fas fa-warehouse"></i> Inventario Disponible</h2>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <select class="form-select" id="categoryFilter">
+                                <option value="">Todas las Categorías</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" id="searchInventory" placeholder="Buscar producto...">
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <button class="btn btn-yellow" data-bs-toggle="modal" data-bs-target="#movementModal">
+                                <i class="fas fa-plus"></i> Nuevo Movimiento
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="bg-black text-white">
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Categoría</th>
+                                    <th>Precio</th>
+                                    <th>Stock</th>
+                                    <th>Valor Total</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventoryTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Movements Section -->
+                <div id="movements" class="section">
+                    <h2 class="mb-4"><i class="fas fa-exchange-alt"></i> Historial de Movimientos</h2>
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <select class="form-select" id="movementTypeFilter">
+                                <option value="">Todos los Tipos</option>
+                                <option value="entrada">Entradas</option>
+                                <option value="salida">Salidas</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="date" class="form-control" id="dateFilter">
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-yellow" id="filterMovementsBtn">
+                                <i class="fas fa-filter"></i> Filtrar
+                            </button>
+                        </div>
+                        <div class="col-md-3 text-end">
+                            <button class="btn btn-yellow" data-bs-toggle="modal" data-bs-target="#movementModal">
+                                <i class="fas fa-plus"></i> Nuevo Movimiento
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="bg-black text-white">
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Tipo</th>
+                                    <th>Producto</th>
+                                    <th>Cantidad</th>
+                                    <th>Usuario</th>
+                                    <th>Notas</th>
+                                </tr>
+                            </thead>
+                            <tbody id="movementsTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Categories Section -->
+                <div id="categories" class="section admin-only">
+                    <h2 class="mb-4"><i class="fas fa-tags"></i> Gestión de Categorías</h2>
+                    <button class="btn btn-yellow mb-3" data-bs-toggle="modal" data-bs-target="#categoryModal">
+                        <i class="fas fa-plus"></i> Nueva Categoría
+                    </button>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="bg-black text-white">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Descripción</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="categoriesTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Employees Section -->
+                <div id="employees" class="section admin-only">
+                    <h2 class="mb-4"><i class="fas fa-users"></i> Gestión de Empleados</h2>
+                    <button class="btn btn-yellow mb-3" data-bs-toggle="modal" data-bs-target="#employeeModal">
+                        <i class="fas fa-plus"></i> Nuevo Empleado
+                    </button>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="bg-black text-white">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Usuario</th>
+                                    <th>Rol</th>
+                                    <th>Fecha Creación</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="employeesTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Statistics Section -->
+                <div id="statistics" class="section admin-only">
+                    <h2 class="mb-4"><i class="fas fa-chart-bar"></i> Estadísticas</h2>
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <div class="card-header bg-black text-white">
+                                    <h5 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Productos con Bajo Stock</h5>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="lowStockChart" style="height: 300px;"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <div class="card-header bg-black text-white">
+                                    <h5 class="mb-0"><i class="fas fa-chart-line"></i> Movimientos por Día</h5>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="movementsChart" style="height: 300px;"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header bg-black text-white">
+                                    <h5 class="mb-0"><i class="fas fa-trophy"></i> Productos Más Movidos</h5>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="topProductsChart" style="height: 400px;"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div class="modal fade" id="productModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-black text-white">
+                    <h5 class="modal-title" id="productModalTitle">Nuevo Producto</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="productForm">
+                        <input type="hidden" id="productId">
+                        <div class="mb-3">
+                            <label for="productName" class="form-label">Nombre del Producto</label>
+                            <input type="text" class="form-control" id="productName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productCategory" class="form-label">Categoría</label>
+                            <select class="form-select" id="productCategory" required>
+                                <option value="">Seleccione una categoría</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productPrice" class="form-label">Precio ($)</label>
+                            <input type="number" class="form-control" id="productPrice" step="0.01" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productStock" class="form-label">Stock Inicial</label>
+                            <input type="number" class="form-control" id="productStock" min="0" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productDescription" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="productDescription" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Estado</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="productStatus" id="statusActive" value="activo" checked>
+                                <label class="form-check-label" for="statusActive">Activo</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="productStatus" id="statusInactive" value="inactivo">
+                                <label class="form-check-label" for="statusInactive">Inactivo</label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-yellow w-100">
+                            <i class="fas fa-save"></i> Guardar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Modal -->
+    <div class="modal fade" id="categoryModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-black text-white">
+                    <h5 class="modal-title" id="categoryModalTitle">Nueva Categoría</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="categoryForm">
+                        <input type="hidden" id="categoryId">
+                        <div class="mb-3">
+                            <label for="categoryName" class="form-label">Nombre de la Categoría</label>
+                            <input type="text" class="form-control" id="categoryName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="categoryDescription" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="categoryDescription" rows="2"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-yellow w-100">
+                            <i class="fas fa-save"></i> Guardar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Movement Modal -->
+    <div class="modal fade" id="movementModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-black text-white">
+                    <h5 class="modal-title" id="movementModalTitle">Nuevo Movimiento</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="movementForm">
+                        <input type="hidden" id="movementProductId">
+                        <div class="mb-3">
+                            <label for="movementType" class="form-label">Tipo de Movimiento</label>
+                            <select class="form-select" id="movementType" required>
+                                <option value="entrada">Entrada (Compra)</option>
+                                <option value="salida">Salida (Venta/Pérdida)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="movementProduct" class="form-label">Producto</label>
+                            <select class="form-select" id="movementProduct" required>
+                                <option value="">Seleccione un producto</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="movementQuantity" class="form-label">Cantidad</label>
+                            <input type="number" class="form-control" id="movementQuantity" min="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="movementNotes" class="form-label">Notas/Observaciones</label>
+                            <textarea class="form-control" id="movementNotes" rows="2"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-yellow w-100">
+                            <i class="fas fa-plus"></i> Registrar Movimiento
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Employee Modal -->
+    <div class="modal fade" id="employeeModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-black text-white">
+                    <h5 class="modal-title" id="employeeModalTitle">Nuevo Empleado</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="employeeForm">
+                        <input type="hidden" id="employeeId">
+                        <div class="mb-3">
+                            <label for="employeeName" class="form-label">Nombre Completo</label>
+                            <input type="text" class="form-control" id="employeeName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="employeeUsername" class="form-label">Nombre de Usuario</label>
+                            <input type="text" class="form-control" id="employeeUsername" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="employeePassword" class="form-label">Contraseña</label>
+                            <input type="password" class="form-control" id="employeePassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="employeeRole" class="form-label">Rol</label>
+                            <select class="form-select" id="employeeRole" required>
+                                <option value="empleado">Empleado</option>
+                                <option value="admin">Administrador</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Estado</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="employeeStatus" id="empStatusActive" value="activo" checked>
+                                <label class="form-check-label" for="empStatusActive">Activo</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="employeeStatus" id="empStatusInactive" value="inactivo">
+                                <label class="form-check-label" for="empStatusInactive">Inactivo</label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-yellow w-100">
+                            <i class="fas fa-save"></i> Guardar Empleado
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JS -->
+    <script src="js/auth.js"></script>
+    <script src="js/products.js"></script>
+    <script src="js/movements.js"></script>
+    <script src="js/statistics.js"></script>
+    <script src="js/employees.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
